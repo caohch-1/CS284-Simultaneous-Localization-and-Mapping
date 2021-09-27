@@ -14,10 +14,10 @@ def get_depth(path: str = "hw1_data/data.txt"):
 # Turn depth data into coordinate
 def depth2coor(depth_data_: np.array):
     coordinate_data_ = np.array(
-        [[(np.cos(j * np.pi / 180) * depth_data_[k][j], np.sin(j * np.pi / 180) * depth_data_[k][j]) for j in
+        [[(np.cos(j * np.pi / 180) * depth_data_[h][j], np.sin(j * np.pi / 180) * depth_data_[h][j]) for j in
           range(360)]
          for
-         k in range(360)], dtype=np.float64)
+         h in range(360)], dtype=np.float64)
     return coordinate_data_
 
 
@@ -67,8 +67,16 @@ def rejection(nearest_: np.array, method='median'):
 if __name__ == '__main__':
     depth_data = get_depth()
     coordinate_data = depth2coor(depth_data)
-    for i in range(1):
-        for k in range(10):
+    Rs = list()
+    ts = list()
+    for i in range(7):
+        print('-'*50)
+        coordinate_data = depth2coor(depth_data)
+        last3loss = list()
+        best_loss = np.inf
+        bestR = np.zeros((2, 2))
+        bestT = np.zeros((2, 1))
+        while True:
             # match
             nearest = cal_nearest(i, coordinate_data)
             # reject
@@ -81,7 +89,6 @@ if __name__ == '__main__':
             left2_x = [coordinate_data[i + 1][p[0]][0] for p in nearest]
             left2_y = [coordinate_data[i + 1][p[0]][1] for p in nearest]
             left2_t = [0 for i in range(len(nearest))]
-            print('Loss: ', np.sum(np.abs(np.array(left1_x)-np.array(left2_x)) + np.abs(np.array(left1_y)-np.array(left2_y))))
             # Compute the centers of both point clouds
             p = np.mat([np.average(left1_x), np.average(left1_y)], dtype=np.float64)  # Last frame
             q = np.mat([np.average(left2_x), np.average(left2_y)], dtype=np.float64)  # Current frame
@@ -92,6 +99,7 @@ if __name__ == '__main__':
             U, _, V_T = np.linalg.svd(Q)
             # Rotation
             R = np.matmul(V_T, U.T)
+            # R = np.matmul(U, V_T.T)
             # Translation
             t = p.T - np.matmul(R, q.T)
 
@@ -99,6 +107,30 @@ if __name__ == '__main__':
                 left2_x[j], left2_y[j] = np.array((np.matmul(R, np.mat([left2_x[j], left2_y[j]]).T) + t).T)[0]
                 coordinate_data[i + 1][nearest[j][0]][0] = left2_x[j]
                 coordinate_data[i + 1][nearest[j][0]][1] = left2_y[j]
-            print('Loss: ', np.sum(np.abs(np.array(left1_x)-np.array(left2_x)) + np.abs(np.array(left1_y)-np.array(left2_y))))
-            draw(left1_x, left1_y, left2_x, left2_y)
+
+            # Compute loss
+            loss = np.sum(np.abs(np.array(left1_x)-np.array(left2_x)) + np.abs(np.array(left1_y)-np.array(left2_y)))
+
+            if best_loss > loss:
+                bestT = t
+                bestR = R
+                best_loss = loss
+
+            if len(last3loss) < 3:
+                last3loss.append(loss)
+            else:
+                last3loss[0] = last3loss[1]
+                last3loss[1] = last3loss[2]
+                last3loss[2] = loss
+                # Terminate
+                if (last3loss[2] <= last3loss[1] <= last3loss[0] and abs(last3loss[0] - last3loss[1]) + abs(last3loss[1] - last3loss[2]) < 0.01) \
+                        or last3loss[2] >= last3loss[1] >= last3loss[0]:
+                    print('Convergence: ', best_loss)
+                    draw(left1_x, left1_y, left2_x, left2_y)
+                    break
+
+            print('Loss: ', loss)
+            # draw(left1_x, left1_y, left2_x, left2_y)
+        Rs.append(bestR)
+        ts.append(bestT)
 
