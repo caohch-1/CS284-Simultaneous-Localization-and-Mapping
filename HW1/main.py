@@ -34,15 +34,15 @@ def cal_nearest(index: int, coor: np.array, coor_x: np.array = None, coor_y: np.
     if coor_x is None and coor_y is None:
         coor_x, coor_y = de_coor2xy(coor)
 
-    for j in range(360):
-        dis = np.sqrt(np.square(coor_x[index + 1][j] - coor_x[0]) + np.square(coor_y[index + 1][j] - coor_y[0]))
-        nearest_point.append((j, np.argmin(dis), np.min(dis)))
+    for h in range(360):
+        dis = np.sqrt(np.square(coor_x[index + 1][h] - coor_x[index]) + np.square(coor_y[index + 1][h] - coor_y[index]))
+        nearest_point.append((h, np.argmin(dis), np.min(dis)))
 
     return nearest_point
 
 
 # Draw
-def draw(coor1_x: np.array, coor1_y: np.array, coor2_x: np.array, coor2_y: np.array):
+def draw(coor1_x: np.array, coor1_y: np.array, coor2_x: np.array, coor2_y: np.array, index: int = None):
     assert len(coor1_x) == len(coor2_x) == len(coor1_y) == len(coor2_y)
     frame1 = plt.scatter(coor1_x, coor1_y, s=1, c='red')
     frame2 = plt.scatter(coor2_x, coor2_y, s=1, c='green')
@@ -51,7 +51,12 @@ def draw(coor1_x: np.array, coor1_y: np.array, coor2_x: np.array, coor2_y: np.ar
         plt.plot([coor2_x[j], coor1_x[j]], [coor2_y[j], coor1_y[j]], c='g', linewidth=0.4)
 
     plt.legend([frame1, frame2], ['Old', 'Current'], scatterpoints=2, loc='upper left')
-    plt.savefig("test.jpg", dpi=1000)
+    if index is None:
+        plt.title("test.jpg")
+        plt.savefig("seq_frame_pics/test.jpg", dpi=1000)
+    else:
+        plt.title("Frame{}&{}.jpg".format(str(index), str(index-1)))
+        plt.savefig("seq_frame_pics/Frame{}&{}.jpg".format(str(index), str(index-1)))
     plt.show()
 
 
@@ -69,7 +74,7 @@ if __name__ == '__main__':
     coordinate_data = depth2coor(depth_data)
     Rs = list()
     ts = list()
-    for i in range(7):
+    for i in range(359):
         print('-'*50)
         coordinate_data = depth2coor(depth_data)
         last3loss = list()
@@ -123,13 +128,13 @@ if __name__ == '__main__':
                 last3loss[1] = last3loss[2]
                 last3loss[2] = loss
                 # Terminate
-                if (last3loss[2] <= last3loss[1] <= last3loss[0] and abs(last3loss[0] - last3loss[1]) + abs(last3loss[1] - last3loss[2]) < 0.01) \
+                if (abs(last3loss[0] - last3loss[1]) + abs(last3loss[1] - last3loss[2]) < 0.01) \
                         or last3loss[2] >= last3loss[1] >= last3loss[0]:
                     print('Convergence: ', best_loss)
-                    draw(left1_x, left1_y, left2_x, left2_y)
+                    draw(left1_x, left1_y, left2_x, left2_y, i+1)
                     break
 
-            print('Loss: ', loss)
+            # print('Loss: ', loss, last3loss)
             # draw(left1_x, left1_y, left2_x, left2_y)
         Rs.append(bestR)
         ts.append(bestT)
