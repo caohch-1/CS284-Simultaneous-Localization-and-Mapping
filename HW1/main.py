@@ -121,6 +121,7 @@ if __name__ == '__main__':
                 bestR = R
                 best_loss = loss
 
+            # Judge if terminate
             if len(last3loss) < 3:
                 last3loss.append(loss)
             else:
@@ -133,7 +134,7 @@ if __name__ == '__main__':
                     print('Convergence: ', best_loss)
                     draw(left1_x, left1_y, left2_x, left2_y, i+1)
                     break
-
+            # Todo: Compute coordinate of the car(scanner) and compute loss
             # print('Loss: ', loss, last3loss)
             # draw(left1_x, left1_y, left2_x, left2_y)
         Rs.append(bestR)
