@@ -52,11 +52,29 @@ def draw(coor1_x: np.array, coor1_y: np.array, coor2_x: np.array, coor2_y: np.ar
 
     plt.legend([frame1, frame2], ['Old', 'Current'], scatterpoints=2, loc='upper left')
     if index is None:
-        plt.title("test.jpg")
+        plt.title("test")
         plt.savefig("seq_frame_pics/test.jpg", dpi=1000)
     else:
-        plt.title("Frame{}&{}.jpg".format(str(index), str(index-1)))
-        plt.savefig("seq_frame_pics/Frame{}&{}.jpg".format(str(index), str(index-1)))
+        plt.title("Frame{}&{}".format(str(index), str(index - 1)))
+        plt.savefig("seq_frame_pics/Frame{}&{}.jpg".format(str(index), str(index - 1)))
+    plt.show()
+
+
+def draw_unICP(coor1_x: np.array, coor1_y: np.array, coor2_x: np.array, coor2_y: np.array, index: int = None):
+    assert len(coor1_x) == len(coor2_x) == len(coor1_y) == len(coor2_y)
+    frame1 = plt.scatter(coor1_x, coor1_y, s=1, c='red')
+    frame2 = plt.scatter(coor2_x, coor2_y, s=1, c='green')
+
+    for j in range(len(coor1_x)):
+        plt.plot([coor2_x[j], coor1_x[j]], [coor2_y[j], coor1_y[j]], c='g', linewidth=0.4)
+
+    plt.legend([frame1, frame2], ['Old', 'Current'], scatterpoints=2, loc='upper left')
+    if index is None:
+        plt.title("test")
+        plt.savefig("seq_frame_pics/test.jpg", dpi=1000)
+    else:
+        plt.title("Frame{}&{}_unICP".format(str(index), str(index - 1)))
+        plt.savefig("seq_frame_pics/Frame{}&{}_unICP.jpg".format(str(index), str(index - 1)))
     plt.show()
 
 
@@ -74,13 +92,16 @@ if __name__ == '__main__':
     coordinate_data = depth2coor(depth_data)
     Rs = list()
     ts = list()
+    car = [np.mat([1, 0]).T]
     for i in range(359):
-        print('-'*50)
+        print('-' * 50)
+        print(i)
         coordinate_data = depth2coor(depth_data)
         last3loss = list()
         best_loss = np.inf
         bestR = np.zeros((2, 2))
         bestT = np.zeros((2, 1))
+        have_draw_unICP = False
         while True:
             # match
             nearest = cal_nearest(i, coordinate_data)
@@ -94,6 +115,11 @@ if __name__ == '__main__':
             left2_x = [coordinate_data[i + 1][p[0]][0] for p in nearest]
             left2_y = [coordinate_data[i + 1][p[0]][1] for p in nearest]
             left2_t = [0 for i in range(len(nearest))]
+
+            if not have_draw_unICP:
+                draw_unICP(left1_x, left1_y, left2_x, left2_y, i + 1)
+                have_draw_unICP = True
+
             # Compute the centers of both point clouds
             p = np.mat([np.average(left1_x), np.average(left1_y)], dtype=np.float64)  # Last frame
             q = np.mat([np.average(left2_x), np.average(left2_y)], dtype=np.float64)  # Current frame
@@ -114,7 +140,9 @@ if __name__ == '__main__':
                 coordinate_data[i + 1][nearest[j][0]][1] = left2_y[j]
 
             # Compute loss
-            loss = np.sum(np.abs(np.array(left1_x)-np.array(left2_x)) + np.abs(np.array(left1_y)-np.array(left2_y)))
+            loss = np.sum(np.abs(np.array(left1_x) - np.array(left2_x)) + np.abs(np.array(left1_y) - np.array(left2_y)))
+            # loss = np.sum(np.sqrt(np.square(np.array(left1_x) - np.array(left2_x)) + np.square(np.array(left1_y) -
+            #                                                                                    np.array(left2_y))))
 
             if best_loss > loss:
                 bestT = t
@@ -132,11 +160,12 @@ if __name__ == '__main__':
                 if (abs(last3loss[0] - last3loss[1]) + abs(last3loss[1] - last3loss[2]) < 0.01) \
                         or last3loss[2] >= last3loss[1] >= last3loss[0]:
                     print('Convergence: ', best_loss)
-                    draw(left1_x, left1_y, left2_x, left2_y, i+1)
+                    draw(left1_x, left1_y, left2_x, left2_y, i + 1)
                     break
-            # Todo: Compute coordinate of the car(scanner) and compute loss
             # print('Loss: ', loss, last3loss)
             # draw(left1_x, left1_y, left2_x, left2_y)
+        # Todo: Compute coordinate of the car(scanner) and compute loss
+        # car.append(np.matmul(bestR, car[-1]) + bestT)
+        # print('Car point: ({}, {})'.format(np.array(car)[-1][0], np.array(car)[-1][1]))
         Rs.append(bestR)
         ts.append(bestT)
-
