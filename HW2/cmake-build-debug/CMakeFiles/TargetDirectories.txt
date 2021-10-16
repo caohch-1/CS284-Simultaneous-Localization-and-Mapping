@@ -1,3 +1,0 @@
-/home/caohch1/Downloads/SLAM/HW2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/caohch1/Downloads/SLAM/HW2/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/caohch1/Downloads/SLAM/HW2/cmake-build-debug/CMakeFiles/HW2.dir

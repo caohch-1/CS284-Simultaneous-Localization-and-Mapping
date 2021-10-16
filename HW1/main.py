@@ -81,8 +81,8 @@ def draw(coor1_x: np.array, coor1_y: np.array, coor2_x: np.array, coor2_y: np.ar
     else:
         plt.title("Frame{}&{}".format(str(index), str(index - 1)))
         plt.savefig("seq_frame_pics/Frame{}&{}.jpg".format(str(index), str(index - 1)))
-    # plt.show()
-    plt.pause(0.5)
+    plt.show()
+    # plt.pause(0.5)
 
 
 def draw_unICP(coor1_x: np.array, coor1_y: np.array, coor2_x: np.array, coor2_y: np.array, index: int = None):
@@ -100,8 +100,8 @@ def draw_unICP(coor1_x: np.array, coor1_y: np.array, coor2_x: np.array, coor2_y:
     else:
         plt.title("Frame{}&{}_unICP".format(str(index), str(index - 1)))
         plt.savefig("seq_frame_pics/Frame{}&{}_unICP.jpg".format(str(index), str(index - 1)))
-    # plt.show()
-    plt.pause(0.5)
+    plt.show()
+    # plt.pause(0.5)
 
 
 # Return list with (current_frame_index, last_frame_index, distance)
