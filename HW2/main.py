@@ -36,7 +36,29 @@ def task2():
     xytheta_list = read_data()
     T_list = [xytheta2T(xytheta) for xytheta in xytheta_list][:-1]
     frame_list = [np.identity(3)]
+    for i in range(len(T_list)):
+        frame_list.append(np.dot(T_list[i], frame_list[-1]))
+
+    vertex_info_list = list()
+
+    for i in range(len(frame_list))[:6]:
+        x = frame_list[i][0][2]
+        y = frame_list[i][1][2]
+        theta = math.acos(frame_list[i][0][0])
+        vertex_info_list.append('VERTEX_SE2 {} {:.6f} {:.6f} {:.6f}\n'.format(i, x, y, theta))
+
+    for i in range(len(frame_list))[6:]:
+        x = frame_list[i][0][2]
+        y = frame_list[i][1][2]
+        theta = -math.acos(frame_list[i][0][0])
+        vertex_info_list.append('VERTEX_SE2 {} {:.6f} {:.6f} {:.6f}\n'.format(i, x, y, theta))
+
+    with open('task2_g2o.g2o', 'w') as f:
+        f.writelines(vertex_info_list)
+
+    edge_info_list = list()
 
 
 if __name__ == '__main__':
+    task1()
     task2()
