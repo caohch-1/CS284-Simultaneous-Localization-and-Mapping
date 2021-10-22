@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f1290066-8554-4d8a-b611-da0b35432599" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CS284_hw2.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/g2oVStoro.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/input_MITb_g2o.g2o" beforeDir="false" afterPath="$PROJECT_DIR$/g2o_data/input_MITb_g2o.g2o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output_MITb_g2o.g2o" beforeDir="false" afterPath="$PROJECT_DIR$/g2o_data/output_MITb_g2o.g2o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res_task2.g2o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/res_task3.g2o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/task2_g2o.g2o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/task3_g2o.g2o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CS184_HW2.pdf" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,6 +82,7 @@
       <workItem from="1634459724656" duration="614000" />
       <workItem from="1634460361487" duration="3307000" />
       <workItem from="1634645116296" duration="11461000" />
+      <workItem from="1634754130506" duration="7000" />
     </task>
     <servers />
   </component>
