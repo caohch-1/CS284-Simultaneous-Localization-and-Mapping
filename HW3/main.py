@@ -140,7 +140,7 @@ if __name__ == '__main__':
     img1 = cv2.circle(img1, (896, 895), 20, (0, 255, 0), 4)  # 0, 0, 101.5
     img1 = cv2.circle(img1, (1273, 2809), 20, (0, 0, 255), 4)  # 0, -1, 0
     img1 = cv2.circle(img1, (3286, 1715), 20, (160, 32, 240), 4)  # 175, 0, 0
-    cv2.imwrite('./img1_corner.jpeg', img1)
+    cv2.imwrite('./vis/img1_corner.jpeg', img1)
     uv1 = [[885, 830], [3628, 340], [2626, 240], [896, 895], [1273, 2809], [3286, 1715]]
 
     img2 = cv2.imread('./CS284_hw3_data/img2.jpeg')
@@ -150,7 +150,7 @@ if __name__ == '__main__':
     img2 = cv2.circle(img2, (56, 1087), 20, (0, 255, 0), 4)  # 0, 0, 101.5
     img2 = cv2.circle(img2, (505, 2727), 20, (0, 0, 255), 4)  # 0, -1, 0
     img2 = cv2.circle(img2, (3333, 2588), 20, (160, 32, 240), 4)  # 175, 0, 0
-    cv2.imwrite('./img2_corner.jpeg', img2)
+    cv2.imwrite('./vis/img2_corner.jpeg', img2)
     uv2 = [[47, 1037], [3795, 980], [3097, 695], [56, 1087], [505, 2727], [3333, 2588]]
 
     img3 = cv2.imread('./CS284_hw3_data/img3.jpeg')
@@ -160,7 +160,7 @@ if __name__ == '__main__':
     img3 = cv2.circle(img3, (687, 849), 20, (0, 255, 0), 4)  # 0, 0, 101.5
     img3 = cv2.circle(img3, (877, 1929), 20, (0, 0, 255), 4)  # 0, -1, 0
     img3 = cv2.circle(img3, (2527, 2760), 20, (160, 32, 240), 4)  # 175, 0, 0
-    cv2.imwrite('./img3_corner.jpeg', img3)
+    cv2.imwrite('./vis/img3_corner.jpeg', img3)
     uv3 = [[687, 819], [2735, 1175], [3275, 896], [687, 849], [877, 1929], [2527, 2760]]
 
     L1, err1 = DLT(3, xyz, uv1)
@@ -205,42 +205,42 @@ if __name__ == '__main__':
     min_match = matches[0].distance
     matches = [match for match in matches if match.distance <= max(2 * min_match, 30.0)]
     img_match12 = cv2.drawMatches(img1, kp1, img2, kp2, matches, None, flags=2)
-    cv2.imwrite('match_img12.jpeg', img_match12)
+    cv2.imwrite('./vis/match_img12.jpeg', img_match12)
 
     matches = bf.match(des2, des1)
     matches = sorted(matches, key=lambda x: x.distance)
     min_match = matches[0].distance
     matches = [match for match in matches if match.distance <= max(2 * min_match, 30.0)]
     img_match21 = cv2.drawMatches(img2, kp2, img1, kp1, matches, None, flags=2)
-    cv2.imwrite('match_img21.jpeg', img_match21)
+    cv2.imwrite('./vis/match_img21.jpeg', img_match21)
 
     matches = bf.match(des1, des3)
     matches = sorted(matches, key=lambda x: x.distance)
     min_match = matches[0].distance
     matches = [match for match in matches if match.distance <= max(2 * min_match, 30.0)]
     img_match13 = cv2.drawMatches(img1, kp1, img3, kp3, matches, None, flags=2)
-    cv2.imwrite('match_img13.jpeg', img_match13)
+    cv2.imwrite('./vis/match_img13.jpeg', img_match13)
 
     matches = bf.match(des3, des1)
     matches = sorted(matches, key=lambda x: x.distance)
     min_match = matches[0].distance
     matches = [match for match in matches if match.distance <= max(2 * min_match, 30.0)]
     img_match31 = cv2.drawMatches(img3, kp3, img1, kp1, matches, None, flags=2)
-    cv2.imwrite('match_img31.jpeg', img_match31)
+    cv2.imwrite('./vis/match_img31.jpeg', img_match31)
 
     matches = bf.match(des2, des3)
     matches = sorted(matches, key=lambda x: x.distance)
     min_match = matches[0].distance
     matches = [match for match in matches if match.distance <= max(2 * min_match, 30.0)]
     img_match23 = cv2.drawMatches(img2, kp2, img3, kp3, matches, None, flags=2)
-    cv2.imwrite('match_img23.jpeg', img_match23)
+    cv2.imwrite('./vis/match_img23.jpeg', img_match23)
 
     matches = bf.match(des3, des2)
     matches = sorted(matches, key=lambda x: x.distance)
     min_match = matches[0].distance
     matches = [match for match in matches if match.distance <= max(2 * min_match, 30.0)]
     img_match32 = cv2.drawMatches(img3, kp3, img2, kp2, matches, None, flags=2)
-    cv2.imwrite('match_img32.jpeg', img_match32)
+    cv2.imwrite('./vis/match_img32.jpeg', img_match32)
 
     match12_p1s = list()
     match12_p2s = list()
