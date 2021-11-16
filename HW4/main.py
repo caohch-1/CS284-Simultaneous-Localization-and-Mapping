@@ -122,11 +122,9 @@ def task23(show_results=True):
 if __name__ == '__main__':
     t0 = time.time()
     uvList_list = task1(False)
-    print('Time1: {}'.format(time.time() - t0))
     uvList_list = task21(False)
-    # xyz_list = task22(False)
-    # R_list, C_list, theta_list = task23(False)
-    # print('Time1: {}'.format(time.time() - t0))
+    xyz_list = task22(False)
+    R_list, C_list, theta_list = task23(False)
 
     camera_params = np.zeros((9, 9))
     for i in range(9):
@@ -154,13 +152,18 @@ if __name__ == '__main__':
     n_points = points_3d.shape[0]
 
     n = 9 * n_cameras + 3 * n_points
+
     m = 2 * points_2d.shape[0]
 
     x0 = np.hstack((camera_params.ravel(), points_3d.ravel()))
+    n *= 10
     f0 = fun(x0, n_cameras, n_points, camera_indices, point_indices, points_2d)
 
     A = ba_matrix(n_cameras, n_points, camera_indices, point_indices)
     res = least_squares(fun, x0, jac_sparsity=A, args=(n_cameras, n_points, camera_indices, point_indices, points_2d))
 
+    print('Time consumed {}s'.format(time.time()-t0))
     print('3D points err: ', np.abs(x0[9 * n_cameras:] - res.x[9 * n_cameras:]).sum() / n)
-    print('Pose err: ', np.abs(x0[:9 * n_cameras] - res.x[:9 * n_cameras]).sum() / n)
+    pose = (x0[:9 * n_cameras] - res.x[:9 * n_cameras]).reshape((9, 9))
+    print('Pose Rotation err: ', np.abs(pose[:, 0:3]).sum() / (3*9))
+    print('Pose Translation err: ', np.abs(pose[:, 3:6]).sum() / (3*9*6))
