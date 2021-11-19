@@ -11,7 +11,7 @@ from numba.experimental import jitclass
 from numba import int32, float32
 import matplotlib.cm as cm
 
-from data_loader import *
+from ..data_loader import *
 from .frame import Frame
 from .icp import ICP
 from .volume import Volume
